@@ -1,0 +1,14 @@
+-------------------------------------------------------------------------------
+Test set: user Login
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 7.254 s <<< FAILURE! - in user Login
+Successful login(user Login)  Time elapsed: 7.231 s  <<< ERROR!
+io.cucumber.core.exception.CucumberException: 
+Step [I should login to the application and see a welcome message] is defined with 0 parameters at 'LoginStepdefs.iShouldLoginToTheApplicationAndSeeAWelcomeMessage()'.
+However, the gherkin step has 1 arguments:
+ * Table:
+      | firstname | lastname |
+      | ahmed     | hammad   |
+
+Step text: I should login to the application and see a welcome message
+
