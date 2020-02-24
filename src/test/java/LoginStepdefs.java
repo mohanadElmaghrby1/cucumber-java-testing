@@ -2,6 +2,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.junit.*;
 import com.mohannad.model.User;
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.After;
 import io.cucumber.java.en.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -12,6 +13,7 @@ import org.junit.Rule;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
@@ -34,111 +36,57 @@ public class LoginStepdefs {
     private List<User> existingUsers;
     WebDriver driver;
 
-    WireMockServer wireMockServer;
-
-//    @Rule
-//    public WireMockRule wireMockRule = new WireMockRule(8090);
-
     @Given("the following user exist in the system")
     public void theFollowingUserExsistInTheSystem(DataTable existingUsers) throws IOException {
-//        this.existingUsers=validUsers;
-//        CloseableHttpClient httpClient = HttpClients.createDefault();
-//        // Mock server
-//        WireMockServer wireMockServer = new WireMockServer(options().port(8080));
-//        wireMockServer.start();
-//        configureFor("localhost", wireMockServer.port());
-//        stubFor(get(urlEqualTo("/api/login"))
-//                .withHeader("content-type", equalTo("application/json"))
-//                .withRequestBody(containing("testing-framework"))
-//                .willReturn(aResponse().withStatus(200)));
 
-//        HttpGet request = new HttpGet("http://localhost:8080/login/api");
-//        request.addHeader("accept", "application/json");
-//        HttpResponse httpResponse = httpClient.execute(request);
-//        String responseString = convertResponseToString(httpResponse);
-
-//        assertThat(responseString, containsString("testing-framework"));
-//        verify(getRequestedFor(urlEqualTo("/api/login"))
-//                .withHeader("accept", equalTo("application/json")));
-
-//        configureFor("localhost", wireMockServer.port());
-//        stubFor(get(urlEqualTo("/api/login"))
-//                .withHeader("Accept", equalTo("text/xml"))
-//                .willReturn(aResponse()
-//                        .withStatus(200)
-//                        .withHeader("Content-Type", "text/xml")
-//                        .withBody("<response>Some content</response>")));
-
-//        wireMockRule.stubFor(post(urlEqualTo("/some/url"))
-//                .withRequestBody(containing("BODY"))
-//                .withHeader("NoSuchHeader", equalTo("This better not be here"))
-//                .willReturn(aResponse().withStatus(200)));
-////
-//        HttpClient client = HttpClientBuilder.create().build();
-//        HttpResponse response = client.execute(new HttpGet("http://localhost:8090/api/login"));
-//        int statusCode = response.getStatusLine().getStatusCode();
-//        assertThat(statusCode, equalTo(HttpStatus.SC_OK));
-
-        System.setProperty("webdriver.gecko.driver", "/home/mohannad/Downloads/driver/geckodriver");
-        driver= new FirefoxDriver();
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\KMCL9403\\Desktop\\drivers\\chromedriver.exe");
+        driver= new ChromeDriver();
         driver.manage().window().maximize();
     }
 
     @When("I login with my credentials")
     public void iLoginWithMyCredentials(DataTable emailAndPAssword) {
         driver.get("http://localhost:4200/login");
-        driver.findElement(By.id("username")).sendKeys("hammad@gmail.com");
-        driver.findElement(By.id("password")).sendKeys("abcd12");
+        driver.findElement(By.id("username")).sendKeys("amisbah.ext@orange.com");
+        driver.findElement(By.id("password")).sendKeys("1234567890");
         driver.findElement(By.id("button")).click();
     }
 
     @Then("I should login to the application and see a welcome message")
-    public void iShouldLoginToTheApplicationAndSeeAWelcomeMessage() {
-        WebElement WelcomeMessage = driver.findElement(By.className("icon-rx"));
-        Assert.assertEquals(true, WelcomeMessage.isDisplayed());
-
-
+    public void iShouldLoginToTheApplicationAndSeeAWelcomeMessage( DataTable emailAndPAssword) {
+        WebElement WelcomeMessage=null;
+        try {
+            WelcomeMessage = driver.findElement(By.id("welcomemessage"));
+            Assert.assertEquals(true, WelcomeMessage.isDisplayed());
+        }catch (Exception e){
+            Assert.fail();
+        }
     }
 
-//    @When("I input  <email> and <password>")
-//    public void iInputEmailAndPassword() {
-//        throw new io.cucumber.java.PendingException();
-//
-//    }
-//
-//    @Then("I should get <invalidmessage>")
-//    public void iShouldGetInvalidmessage() {
-//        throw new io.cucumber.java.PendingException();
-//
-//    }
-//
-//    @And("I should not be logged in")
-//    public void iShouldNotBeLoggedIn() {
-//        throw new io.cucumber.java.PendingException();
-//
-//    }
-//
-//    @When("a user attempts to access the application without login")
-//    public void aUserAttemptsToAccessTheApplicationWithoutLogin() {
-//        throw new io.cucumber.java.PendingException();
-//
-//    }
-//
-//    @Then("I should be redirected to login")
-//    public void iShouldBeRedirectedToLogin() {
-//        throw new io.cucumber.java.PendingException();
-//
-//    }
-//
-//    @And("I should get {string}")
-//    public void iShouldGet(String arg0) {
-//        throw new io.cucumber.java.PendingException();
-//    }
+    @When("I login with my invalid credentials")
+    public void iLoginWithInvalidCredentials(DataTable emailAndPAssword) {
+        driver.get("http://localhost:4200/login");
+        driver.findElement(By.id("username")).sendKeys("oob.ext@orange.co");
+        driver.findElement(By.id("password")).sendKeys("2112");
+        driver.findElement(By.id("button")).click();
+    }
 
-//    @After
-//    public void closeBrowser(){
-//        driver.close();
-//    }
+    @Then("I should get invalid email or password alert message")
+    public void iShouldGetAlertMessage( ) {
+        WebElement alertMessage=null;
+        try {
+            alertMessage = driver.findElement(By.id("alert-message"));
+            Assert.assertEquals(true, alertMessage.isDisplayed());
+        }catch (Exception e){
+            Assert.fail();
+        }
+    }
+
+
+    @After
+    public void closeBrowser(){
+        driver.close();
+    }
 
     private String convertResponseToString(HttpResponse response) throws IOException {
         InputStream responseStream = response.getEntity().getContent();

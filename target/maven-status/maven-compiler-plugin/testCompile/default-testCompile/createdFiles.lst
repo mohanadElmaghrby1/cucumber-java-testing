@@ -1,2 +1,4 @@
+ParameterTypes.class
 LoginStepdefs.class
 RunCucumberTest.class
+User.class

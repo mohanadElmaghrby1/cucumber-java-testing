@@ -2,19 +2,24 @@ Feature: user Login
 
   Background:
     Given the following user exist in the system
-      | email            | password | firstname | lastname |
-      | hammad@gmail.com | abcd12   | mohamed     | hammad   |
-      | mai@gmail.com    | abcd     | mai         | sabry    |
+      | email                  | password   | firstname   | lastname |
+      | amisbah.ext@orange.com | 1234567890 | Ahmed       | Misbah   |
 
   Scenario: Successful login
     When I login with my credentials
       | email            | password |
-      | hammad@gmail.com | abcd12   |
+      | amisbah.ext@orange.com | 1234567890   |
 
     Then I should login to the application and see a welcome message
       | firstname | lastname |
-      | ahmed     | hammad   |
+      | Ahmed     | Misbah   |
 
+  Scenario: Unsuccessful login
+    When I login with my invalid credentials
+      | email            | password |
+      | oob.ext@orange.co | 2112   |
+
+    Then I should get invalid email or password alert message
 
 
 #  Scenario Outline: Invalid credentials
